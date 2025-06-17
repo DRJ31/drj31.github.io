@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Renjie Deng">
+
+
+    <meta name="subtitle" content="Notes on Technology learning">
+
+
+
+
+<title>Projects | DRJ&#39;s Blog - 技术学习笔记</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/totop.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="DRJ's Blog - 技术学习笔记" type="application/atom+xml">
+</head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">DRJ&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/projects">Projects</a>
+                
+                    <a class="menu-item" href="/friends">Friends</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">DRJ&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/projects">Projects</a>
+                
+                    <a class="menu-item" href="/friends">Friends</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    <article class="post-wrap page">
+        
+        <h2 class="post-title">Projects</h2>
+        
+        <section class="post-content">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+
+<p>Here are list of projects I have worked on and some services I deployed. The list contains projects which are under maintenance, archived and some of my coursework projects. The services in the list are mostly develop by other developers on github.</p>
+<p>You can also access some of the services I deployed and my projects which are under maintenance on <a target="_blank" rel="noopener" href="https://drj.app/"><strong>drj.app</strong></a></p>
+<h2 id="List-of-Contents"><a href="#List-of-Contents" class="headerlink" title="List of Contents"></a>List of Contents</h2><ul>
+<li><a href="#Services">Services</a></li>
+<li><a href="#Under-Maintenance">Under Maintenance</a><ul>
+<li><a href="#ShortURL">ShortURL</a></li>
+<li><a href="#Genshin-Tieba-Rank">Genshin Tieba Rank</a></li>
+<li><a href="#Blood-Data-Management-System">Blood Data Management System</a></li>
+<li><a href="#UICCRS">UICCRS</a></li>
+<li><a href="#Syllabus-Management-System">Syllabus Management System</a></li>
+</ul>
+</li>
+<li><a href="#Coursework">Coursework</a><ul>
+<li><a href="#Image-Fusion-Tool">Image Fusion Tool</a></li>
+<li><a href="#Phone-Book">Phone Book</a></li>
+<li><a href="#Brew-Day">Brew Day</a></li>
+<li><a href="#RPC-Chat">RPC Chat</a></li>
+<li><a href="#Lost-and-Found">Lost and Found</a></li>
+<li><a href="#Fruit-Pair">Fruit Pair</a></li>
+</ul>
+</li>
+<li><a href="#Archived">Archived</a><ul>
+<li><a href="#Popub-Docker">Popub Docker</a></li>
+<li><a href="#Yuefan">Yuefan</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="Services"><a href="#Services" class="headerlink" title="Services"></a>Services</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://sub.drj.app/">Clash Subscription Generator</a> <a target="_blank" rel="noopener" href="https://github.com/DRJ31/ShortURL"><i class="fab fa-github"></i></a></li>
+<li><a target="_blank" rel="noopener" href="https://pass.drj.app/">Bitwarden</a> <a target="_blank" rel="noopener" href="https://github.com/bitwarden/web"><i class="fab fa-github"></i></a></li>
+<li><a target="_blank" rel="noopener" href="https://api.drjchn.com/">Bing Wallpaper API</a></li>
+</ul>
+<h2 id="Under-Maintenance"><a href="#Under-Maintenance" class="headerlink" title="Under Maintenance"></a>Under Maintenance</h2><h3 id="ShortURL"><a href="#ShortURL" class="headerlink" title="ShortURL "></a><a target="_blank" rel="noopener" href="https://uich.cc/">ShortURL</a> <a target="_blank" rel="noopener" href="https://github.com/DRJ31/ShortURL"><i class="fab fa-github"></i></a></h3><p>A simple Short URL service written by C++ <em><strong>drogon</strong></em> framework. You just need to input the URL you want to shorten and click <strong>Generate</strong> button, you can get the short URL to copy. You can also go to <a target="_blank" rel="noopener" href="https://uich.cc/404">404 page</a> to access services provided by UICHCC.</p>
+<h3 id="Genshin-Tieba-Rank"><a href="#Genshin-Tieba-Rank" class="headerlink" title="Genshin Tieba Rank "></a><a target="_blank" rel="noopener" href="https://rank.mihoyo.moe/">Genshin Tieba Rank</a> <a target="_blank" rel="noopener" href="https://github.com/DRJ31/TiebaRankReact"><i class="fab fa-github"></i></a></h3><p>A website to watch statistical data of Genshin Impact Tieba, including rank of each user, number of signup user, number of posts. You can even search for some events which happened before Genshin Impact launched.</p>
+<h3 id="Blood-Data-Management-System"><a href="#Blood-Data-Management-System" class="headerlink" title="Blood Data Management System "></a>Blood Data Management System <a target="_blank" rel="noopener" href="https://github.com/DRJ31/BloodDataReact"><i class="fab fa-github"></i></a></h3><p>A simple website to manage results from blood routine examination manually. The frontend is React(Ant Design) and the backend is Express. The project is written in TypeScript. The GitHub repository of backend is <a target="_blank" rel="noopener" href="https://github.com/DRJ31/BloodDataExpress">DRJ31/BloodDataExpress</a>.</p>
+<h3 id="UICCRS"><a href="#UICCRS" class="headerlink" title="UICCRS"></a><a target="_blank" rel="noopener" href="https://crs.uic.edu.cn/">UICCRS</a></h3><p>The target of the project is to provide signin, vote, score and rank functions in UIC poster exhibition. The system has successfully worked for 2019 and 2020 poster exhibition. The project is currently deploying in the internal network of UIC, which could only access with UIC internal network.</p>
+<h3 id="Syllabus-Management-System"><a href="#Syllabus-Management-System" class="headerlink" title="Syllabus Management System "></a><a target="_blank" rel="noopener" href="https://syllabus.drjchn.com/">Syllabus Management System</a> <a target="_blank" rel="noopener" href="https://github.com/DRJ31/FYP_Spring"><i class="fab fa-github"></i></a></h3><p>This is my FYP project, which is designed for managing course syllabus from different schools. Due to incomplete design, the project has a low completion which contains only the basic functions like register, login, create, edit and delete syllabus etc. However, it could still be an example of developing RESTful Spring-boot project with IntelliJ IDEA.</p>
+<h2 id="Coursework"><a href="#Coursework" class="headerlink" title="Coursework"></a>Coursework</h2><h3 id="Image-Fusion-Tool"><a href="#Image-Fusion-Tool" class="headerlink" title="Image Fusion Tool "></a>Image Fusion Tool <a target="_blank" rel="noopener" href="https://github.com/DRJ31/COMP4173-Project"><i class="fab fa-github"></i></a></h3><p>A simple long image fusion tool implmented by OpenCV(C++), which is the final project of Digital Image Processing.</p>
+<h3 id="Phone-Book"><a href="#Phone-Book" class="headerlink" title="Phone Book "></a>Phone Book <a target="_blank" rel="noopener" href="https://github.com/DRJ31/COMP3003-Project"><i class="fab fa-github"></i></a></h3><p>A contact app using Linux socket programming in GTK3.0, which is the final project of Networking.</p>
+<h3 id="Brew-Day"><a href="#Brew-Day" class="headerlink" title="Brew Day "></a><a target="_blank" rel="noopener" href="https://brew.drj.app/">Brew Day</a> <a target="_blank" rel="noopener" href="https://github.com/DRJ31/Dijkstra"><i class="fab fa-github"></i></a></h3><p>A home brew management app using Java Swing.</p>
+<h3 id="RPC-Chat"><a href="#RPC-Chat" class="headerlink" title="RPC Chat "></a>RPC Chat <a target="_blank" rel="noopener" href="https://github.com/DRJ31/DCS-Project"><i class="fab fa-github"></i></a></h3><p>A chat app working in interal network using PyQt5 and Python xmlrpc.</p>
+<h3 id="Lost-and-Found"><a href="#Lost-and-Found" class="headerlink" title="Lost and Found "></a>Lost and Found <a target="_blank" rel="noopener" href="https://github.com/DRJ31/COMP3043-Project"><i class="fab fa-github"></i></a></h3><p>A website which provide lost and found service, which was written by Django.</p>
+<h3 id="Fruit-Pair"><a href="#Fruit-Pair" class="headerlink" title="Fruit Pair "></a>Fruit Pair <a target="_blank" rel="noopener" href="https://github.com/DRJ31/COMP2023-Project"><i class="fab fa-github"></i></a></h3><p>A simple JavaScript game which use php to store and access data from MySQL.</p>
+<h2 id="Archived"><a href="#Archived" class="headerlink" title="Archived"></a>Archived</h2><h3 id="Popub-Docker"><a href="#Popub-Docker" class="headerlink" title="Popub Docker "></a>Popub Docker <a target="_blank" rel="noopener" href="https://github.com/DRJ31/popub-docker"><i class="fab fa-github"></i></a></h3><p>Docker version of a simple reverse proxy tools. The original repo is <a target="_blank" rel="noopener" href="https://github.com/m13253/popub">m13253/popub</a>. There are 3 built docker images:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://hub.docker.com/r/dengrenjie31/popub-relay">Popub Relay (x86_64/amd64)</a></li>
+<li><a target="_blank" rel="noopener" href="https://hub.docker.com/r/dengrenjie31/popub-local">Popub Local (x86_64/amd64)</a></li>
+<li><a target="_blank" rel="noopener" href="https://hub.docker.com/r/dengrenjie31/popub-local-arm64">Popub Local (arm64/aarch64)</a></li>
+</ul>
+<h3 id="Yuefan"><a href="#Yuefan" class="headerlink" title="Yuefan "></a>Yuefan <a target="_blank" rel="noopener" href="https://github.com/DRJ31/Yuefan"><i class="fab fa-github"></i></a></h3><p>A website that initial target is to help us decide where to eat after class. It has abandoned now because the target is not clear and it is temporarily unneeded. Though it is abandoned, it could still be a simple reference to golang gin framework project.</p>
+
+        </section>
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>&copy; <span id="year"></span> Renjie Deng. All rights reserved. | <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17050016号-2</a></span>
+        <script>document.getElementById("year").innerHTML = new Date().getFullYear()</script>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

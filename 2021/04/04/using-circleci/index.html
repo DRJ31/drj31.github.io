@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Renjie Deng">
+
+
+    <meta name="subtitle" content="Notes on Technology learning">
+
+
+
+
+<title>使用Travis-CI或Circle-CI构建C++项目 | DRJ&#39;s Blog - 技术学习笔记</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/totop.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="DRJ's Blog - 技术学习笔记" type="application/atom+xml">
+</head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">DRJ&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/projects">Projects</a>
+                
+                    <a class="menu-item" href="/friends">Friends</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">DRJ&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/projects">Projects</a>
+                
+                    <a class="menu-item" href="/friends">Friends</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">使用Travis-CI或Circle-CI构建C++项目</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Renjie Deng</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 4, 2021&nbsp;&nbsp;9:51:22</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Deployment/">Deployment</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近几个星期整理了自己的服务器，把大部分服务都迁移到了Docker上，有些正在开发或者经常需要更新的项目也在Docker Hub配置了发Release自动构建镜像。然后过了几天以后突发奇想打算给一些正在维护的项目加上CI。刚开始因为Travis-CI比较有名，就打算用Travis-CI持续构建，结果折腾了一天以后发现Travis-CI过一段时间就要收费了，只好在<a target="_blank" rel="noopener" href="https://shields.io/">shields.io</a>支持的CI里面看了一圈，最后决定采用Circle-CI。</p>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><p>一般来说，持续构建的步骤里面有包括跑测试，不过因为我的项目都比较小，没有专门写过测试，构建步骤里面就直接编译了。</p>
+<p>Travis-CI和Circle-CI虽然一个采用虚拟机，一个主推Docker，但是基本上默认系统都是Ubuntu，所以虽然配置文件不大一样，但是里面包含的步骤都基本如下：</p>
+<ul>
+<li>通过apt安装依赖，如<code>gcc</code>, <code>cmake</code>, <code>libboost-all-dev</code>等</li>
+<li>编译安装依赖（如果apt没有）</li>
+<li>编译</li>
+<li>后续操作，如部署，发布等</li>
+</ul>
+<p>如果在apt安装依赖时出现问题，可能需要加上<code>sudo apt update</code>。</p>
+<h2 id="Travis-CI-V-S-Circle-CI"><a href="#Travis-CI-V-S-Circle-CI" class="headerlink" title="Travis-CI V.S Circle-CI"></a>Travis-CI V.S Circle-CI</h2><p>由于前期采用了Travis-CI进行构建，在这里可以通过配置文件对两个CI进行相同工作进行对比。<br><strong>Travis-CI:</strong></p>
+<figure class="highlight yaml"><figcaption><span>.travis.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">cpp</span></span><br><span class="line"><span class="attr">sudo:</span> <span class="string">required</span></span><br><span class="line"><span class="attr">dist:</span> <span class="string">bionic</span></span><br><span class="line"><span class="attr">addons:</span></span><br><span class="line">  <span class="attr">ssh_known_hosts:</span> <span class="string">example.com</span></span><br><span class="line">  <span class="attr">apt:</span></span><br><span class="line">    <span class="attr">packages:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">cmake</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">gcc</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">g++</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">libjsoncpp-dev</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">uuid-dev</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zlib1g-dev</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">openssl</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">libssl-dev</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">mariadb-client</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">mariadb-server</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">build-essential</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">libboost-all-dev</span></span><br><span class="line"><span class="attr">before_install:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">openssl</span> <span class="string">aes-256-cbc</span> <span class="string">-K</span> <span class="string">$encrypted_5c5e58b15b48_key</span> <span class="string">-iv</span> <span class="string">$encrypted_5c5e58b15b48_iv</span></span><br><span class="line">  <span class="string">-in</span> <span class="string">id_rsa.enc</span> <span class="string">-out</span> <span class="string">~/.ssh/id_rsa</span> <span class="string">-d</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">chmod</span> <span class="number">600</span> <span class="string">~/.ssh/id_rsa</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">wget</span> <span class="string">https://github.com/google/googletest/archive/release-1.10.0.tar.gz</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">tar</span> <span class="string">xf</span> <span class="string">release-1.10.0.tar.gz</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">cd</span> <span class="string">googletest-release-1.10.0</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">cmake</span> <span class="string">.</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">make</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">sudo</span> <span class="string">make</span> <span class="string">install</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">cd</span> <span class="bullet">-</span></span><br><span class="line"><span class="attr">script:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">git</span> <span class="string">submodule</span> <span class="string">update</span> <span class="string">--init</span> <span class="string">--recursive</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">mkdir</span> <span class="string">build</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">cd</span> <span class="string">build</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">cmake</span> <span class="string">..</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">make</span></span><br><span class="line"><span class="attr">after_success:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">mkdir</span> <span class="string">shorturl</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">mv</span> <span class="string">etc/</span> <span class="string">static/</span> <span class="string">ShortURL</span> <span class="string">shorturl</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">tar</span> <span class="string">Jcvf</span> <span class="string">shorturl.tar.xz</span> <span class="string">shorturl/</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">scp</span> <span class="string">shorturl.tar.xz</span> <span class="string">ubuntu@example.com:~</span></span><br></pre></td></tr></table></figure>
+<p><strong>Circle-CI:</strong></p>
+<figure class="highlight yaml"><figcaption><span>.circleci/config.yaml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="number">2.1</span></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">docker:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">image:</span> <span class="string">circleci/buildpack-deps:focal</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">checkout</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">add_ssh_keys:</span></span><br><span class="line">          <span class="attr">fingerprints:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">&quot;aa:bb:cc:dd:ee:ff:gg:hh:c1:d4:f3:88:d4:26:8f:95&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">sudo</span> <span class="string">apt</span> <span class="string">install</span> <span class="string">cmake</span> <span class="string">gcc</span> <span class="string">g++</span> <span class="string">libjsoncpp-dev</span> <span class="string">uuid-dev</span> <span class="string">zlib1g-dev</span> <span class="string">openssl</span> <span class="string">\</span></span><br><span class="line">          <span class="string">libssl-dev</span> <span class="string">mariadb-client</span> <span class="string">mariadb-server</span> <span class="string">build-essential</span> <span class="string">libboost-all-dev</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">wget</span> <span class="string">https://github.com/google/googletest/archive/release-1.10.0.tar.gz</span></span><br><span class="line">          <span class="string">tar</span> <span class="string">xf</span> <span class="string">release-1.10.0.tar.gz</span> <span class="string">-C</span> <span class="string">~/</span></span><br><span class="line">          <span class="string">cd</span> <span class="string">~/googletest-release-1.10.0</span></span><br><span class="line">          <span class="string">cmake</span> <span class="string">.</span></span><br><span class="line">          <span class="string">make</span></span><br><span class="line">          <span class="string">sudo</span> <span class="string">make</span> <span class="string">install</span></span><br><span class="line">          <span class="string">cd</span> <span class="bullet">-</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">git</span> <span class="string">submodule</span> <span class="string">update</span> <span class="string">--init</span> <span class="string">--recursive</span></span><br><span class="line">          <span class="string">mkdir</span> <span class="string">build</span></span><br><span class="line">          <span class="string">cd</span> <span class="string">build</span></span><br><span class="line">          <span class="string">cmake</span> <span class="string">..</span></span><br><span class="line">          <span class="string">make</span></span><br><span class="line">          <span class="string">mkdir</span> <span class="string">shorturl</span></span><br><span class="line">          <span class="string">mv</span> <span class="string">etc/</span> <span class="string">static/</span> <span class="string">ShortURL</span> <span class="string">shorturl</span></span><br><span class="line">          <span class="string">tar</span> <span class="string">Jcvf</span> <span class="string">shorturl.tar.xz</span> <span class="string">shorturl/</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">ssh-keyscan</span> <span class="string">-t</span> <span class="string">rsa</span> <span class="string">example.com</span> <span class="string">&gt;&gt;</span> <span class="string">~/.ssh/known_hosts</span></span><br><span class="line">          <span class="string">scp</span> <span class="string">build/shorturl.tar.xz</span> <span class="string">ubuntu@example.com:~</span></span><br><span class="line"></span><br><span class="line"><span class="attr">workflows:</span></span><br><span class="line">  <span class="attr">version:</span> <span class="number">2</span></span><br><span class="line">  <span class="attr">master_build:</span></span><br><span class="line">    <span class="attr">jobs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">build:</span></span><br><span class="line">          <span class="attr">filters:</span></span><br><span class="line">            <span class="attr">branches:</span></span><br><span class="line">              <span class="attr">only:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>Travis-CI和Circle-CI都采用yaml作为配置文件，Travis-CI的配置文件一般都是自己编写，然后push到github上面来触发构建，而Circle-CI则更为先进。Circle-CI在线上有专门的编辑器，在初次设置项目的时候会自动开一个新的分支并给出示例配置文件。在编辑配置文件时有自动检查功能，如果构建失败了还可以直接在线上编辑配置文件。这样的话相对于新手会有更好的体验。</p>
+<h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><p>Travis-CI 把工作流程分成<code>before_install</code>, <code>install</code>, <code>before_script</code>, <code>script</code>, <code>after_success</code>等阶段。其中<code>install</code>系列与安装依赖阶段有关，<code>script</code>系列与构建阶段有关。而Circle-CI则是全部用<code>run</code>来代替。如果需要同时构建多个平台的Release，Travis-CI可以通过matrix来进行，而Circle-CI则是在workflow中包含多个jobs来代替。在构建流程中，Travis-CI 一般会直接到代码根目录，而Circle-CI一般需要在第一步用<code>- checkout</code>来定位到代码根目录。后面每次新开一个<code>run</code>都会自动切回代码根目录。</p>
+<h3 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h3><p>Travis-CI一般采用预装好运行环境的虚拟机来运行，而Circle-CI则是主推docker运行。虽然看起来不同，但是即使在Circle-CI里面也可以把Docker直接当成一个虚拟机来看待。Circle-CI的docker镜像和一般的docker镜像不太一样。一般的docker镜像都是默认root用户，但是Circle-CI自己构建的docker镜像如果需要进行root操作，需要在命令之前加上<code>sudo</code>。Circle-CI的sudo默认不需要密码，而不是像Travis-CI一样需要提前指定需要sudo权限来避免输密码导致构建停止。</p>
+<h3 id="自带功能"><a href="#自带功能" class="headerlink" title="自带功能"></a>自带功能</h3><p>Travis-CI似乎自带功能多一些，比如可以加密文件并自动把解密步骤放到配置文件里面，在Circle-CI里面的解决办法一般就是把密码写在Project Settings的环境变量里面，然后自己写命令来解密。如果涉及到把编译好的文件放到自己的服务器上或者一些git操作，Circle-CI支持上传SSH Key，就不需要像Travis-CI一样把SSH Key加密然后放到repo里面。</p>
+<p>虽然Circle-CI在配置文件上自带功能少一些，但是通过像写bash脚本一样把Linux命令加上去也可以实现一样的效果。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Renjie Deng</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://www.drjchn.com/2021/04/04/using-circleci/">https://www.drjchn.com/2021/04/04/using-circleci/</a></span>
+                    </p>
+                
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>劳逸结合是不错，但也别放松过头</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/CircleCI/">#CircleCI</a> <span>/</span>
+                    
+                        <a href="/tags/Travis-CI/">#Travis-CI</a> <span>/</span>
+                    
+                        <a href="/tags/CI/">#CI</a> <span>/</span>
+                    
+                        <a href="/tags/Continuous-Integration/">#Continuous Integration</a> <span>/</span>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();"><i class="fas fa-arrow-left"></i></a>
+                <span>· </span>
+                <a href="/"><i class="fas fa-home"></i></a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2021/04/21/jetbrains-input/">JetBrains系列IDE中文输入法问题</a>
+            
+            
+            <a class="next" rel="next" href="/2021/04/02/hello-world/">Hello World</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>&copy; <span id="year"></span> Renjie Deng. All rights reserved. | <a href="http://beian.miit.gov.cn" target="_blank">粤ICP备17050016号-2</a></span>
+        <script>document.getElementById("year").innerHTML = new Date().getFullYear()</script>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
